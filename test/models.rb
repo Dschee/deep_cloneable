@@ -7,10 +7,12 @@ module Animal
   end
   class Pig < ActiveRecord::Base
     belongs_to :human
+    belongs_to :favorite_chicken, class_name: 'Chicken', inverse_of: :favoring_pigs
   end
 
   class Chicken < ActiveRecord::Base
     has_many :ownerships
+    has_many :favoring_pigs, class_name: 'Pig', inverse_of: :favorite_chicken
     has_many :humans, :through => :ownerships
   end
 

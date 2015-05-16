@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table :pigs, :force => true do |t|
     t.column :name, :string
     t.column :human_id, :integer
+    t.column :favorite_chicken_id, :integer
   end
 
   create_table :humen, :force => true do |t|
