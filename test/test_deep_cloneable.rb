@@ -81,6 +81,21 @@ class TestDeepCloneable < MiniTest::Unit::TestCase
     assert_equal 1, deep_clone.treasures.size
   end
 
+  def test_multiple_include_association_with_reuse
+    @human = Animal::Human.create :name => "Michael"
+    @chicken = Animal::Chicken.create :name => 'Chick'
+    @pig = Animal::Pig.create :human => @human, :name => 'big pig', :favorite_chicken => @chicken
+    @human.chickens << @chicken
+
+    deep_clone_human = @human.deep_clone(:include => [:pigs, :chickens])
+    assert deep_clone_human.new_record?
+    assert deep_clone_human.save
+    assert_equal 1, deep_clone_human.pigs.count
+    assert_equal 1, deep_clone_human.chickens.count
+    cloned_pig = deep_clone_human.pigs.first
+    assert_equal cloned_pig.favorite_chicken.id, @human.chickens.first.id
+  end
+
   def test_deep_include_association
     deep_clone = @jack.deep_clone(:include => {:treasures => :gold_pieces})
     assert deep_clone.new_record?
